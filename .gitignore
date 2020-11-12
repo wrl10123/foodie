@@ -1,0 +1,39 @@
+#git的忽略文件，推送时需要忽略什么文件，直接写文件名就可以
+
+*.class
+
+#package file
+
+*.war
+*.ear
+
+#maven file。忽略target文件夹下的所有文件
+target/
+
+#eclipse file
+.settings/
+.project
+.classpath
+
+#idea file
+.idea/
+/idea/
+*.ipr
+*.iml
+*.iws
+
+#临时文件  temp file
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+
+#系统级的忽略 system ignore
+.DS_Store
+Thumbs.db
+
+
+
+
+
