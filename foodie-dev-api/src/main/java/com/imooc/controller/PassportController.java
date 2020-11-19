@@ -1,6 +1,6 @@
 package com.imooc.controller;
 
-import com.imooc.bo.UserBO;
+import com.imooc.pojo.bo.UserBO;
 import com.imooc.pojo.Users;
 import com.imooc.service.UsersService;
 import com.imooc.utils.CookieUtils;
@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 用户通行证
  */
-@Api(value = "注册登录", tags = "用于注册和登录的相关接口")
+@Api(value = "注册登录", tags = {"用于注册和登录的相关接口"})
 @RestController
 @RequestMapping("passport")
 public class PassportController {

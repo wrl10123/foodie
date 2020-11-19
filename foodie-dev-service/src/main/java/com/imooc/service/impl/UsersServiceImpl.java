@@ -1,6 +1,6 @@
 package com.imooc.service.impl;
 
-import com.imooc.bo.UserBO;
+import com.imooc.pojo.bo.UserBO;
 import com.imooc.enums.SexEnum;
 import com.imooc.mapper.UsersMapper;
 import com.imooc.pojo.Users;
