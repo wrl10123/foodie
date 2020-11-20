@@ -5,6 +5,7 @@ import com.imooc.pojo.ItemsImg;
 import com.imooc.pojo.ItemsParam;
 import com.imooc.pojo.ItemsSpec;
 import com.imooc.pojo.vo.CommentLevelCountsVO;
+import com.imooc.pojo.vo.ShopcartVO;
 import com.imooc.utils.PagedGridResult;
 
 import java.util.List;
@@ -83,4 +84,11 @@ public interface ItemService {
      */
     PagedGridResult searchItemsByCat(
             Integer catId, String sort, Integer page, Integer pageSize);
+
+    /**
+     *
+     * @param specIds
+     * @return
+     */
+    List<ShopcartVO> queryItemsBySpecIds (String specIds);
 }

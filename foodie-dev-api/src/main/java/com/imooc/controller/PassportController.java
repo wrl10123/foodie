@@ -44,6 +44,10 @@ public class PassportController {
         if (isExist) {
             return IMOOCJSONResult.errorMsg("用户名已存在");
         }
+
+        //todo 生成用户token，存入redis
+        //todo 同步购物车数据
+
         return IMOOCJSONResult.ok();
     }
 
@@ -80,6 +84,10 @@ public class PassportController {
         //设置cookie
         CookieUtils.setCookie(request, response, "user",
                 JsonUtils.objectToJson(users), true);
+
+        //todo 生成用户token，存入redis
+        //todo 同步购物车数据
+
         return IMOOCJSONResult.ok(users);
     }
 
