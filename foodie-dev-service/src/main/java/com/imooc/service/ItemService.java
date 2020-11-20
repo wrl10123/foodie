@@ -1,11 +1,11 @@
 package com.imooc.service;
 
-import com.imooc.utils.PagedGridResult;
 import com.imooc.pojo.Items;
 import com.imooc.pojo.ItemsImg;
 import com.imooc.pojo.ItemsParam;
 import com.imooc.pojo.ItemsSpec;
 import com.imooc.pojo.vo.CommentLevelCountsVO;
+import com.imooc.utils.PagedGridResult;
 
 import java.util.List;
 
@@ -55,10 +55,32 @@ public interface ItemService {
      *
      * @param itemId
      * @param level
-     * @param page 第几页
+     * @param page     第几页
      * @param pageSize 每页显示的条数
      * @return
      */
     PagedGridResult queryPagedComments(
             String itemId, Integer level, Integer page, Integer pageSize);
+
+    /**
+     *
+     * @param keywords 搜索的关键字
+     * @param sort 排序条件
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    PagedGridResult searchItems(
+            String keywords, String sort, Integer page, Integer pageSize);
+
+    /**
+     *
+     * @param catId 分类id
+     * @param sort 排序条件
+     * @param page
+     * @param pageSize
+     * @return
+     */
+    PagedGridResult searchItemsByCat(
+            Integer catId, String sort, Integer page, Integer pageSize);
 }
