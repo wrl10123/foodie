@@ -31,7 +31,6 @@ public class ShopCartController {
             @RequestBody ShopcartBO shopcartBO,
             HttpServletRequest request,
             HttpServletResponse response) {
-
         log.info("{}", shopcartBO);
 
         if (StringUtils.isBlank(userId)) {
@@ -39,6 +38,22 @@ public class ShopCartController {
         }
 
         //todo 前端用户在登录的情况下添加商品到购物差，会同步到redis
+
+        return IMOOCJSONResult.ok();
+    }
+
+    @ApiOperation(value = "删除购物车商品", httpMethod = "POST")
+    @PostMapping("del")
+    public IMOOCJSONResult del(
+            @RequestParam String userId,
+            @RequestParam String itemSpecId,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        if (StringUtils.isBlank(userId) || StringUtils.isBlank(itemSpecId)) {
+            return IMOOCJSONResult.errorMsg("");
+        }
+
+        //todo 前端用户在登录的情况下删除购车从中的商品，会同步到redis
 
         return IMOOCJSONResult.ok();
     }
