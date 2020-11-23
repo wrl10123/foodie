@@ -38,6 +38,7 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapperCustom.getSubCatList(rootCatId);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public List<SimpleItemVO> getSixNewItemsLazy(Integer rootCatId) {
         Map<String, Object> map = new HashMap<>();
