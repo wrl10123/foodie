@@ -12,6 +12,8 @@ import com.imooc.pojo.OrderStatus;
 import com.imooc.pojo.Orders;
 import com.imooc.pojo.UserAddress;
 import com.imooc.pojo.bo.SubmitOrderBO;
+import com.imooc.pojo.vo.MerchantOrderVO;
+import com.imooc.pojo.vo.OrderVO;
 import com.imooc.service.AddressService;
 import com.imooc.service.ItemService;
 import com.imooc.service.OrderService;
@@ -41,10 +43,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public String createOrder(SubmitOrderBO submitOrderBO) {
+    public OrderVO createOrder(SubmitOrderBO submitOrderBO) {
+        String userId = submitOrderBO.getUserId();
         //获取用户地址详细信息
         UserAddress address = addressService.queryUserAddress(
-                submitOrderBO.getUserId(), submitOrderBO.getAddressId());
+                userId, submitOrderBO.getAddressId());
         //创建一个订单id
         String orderId = sid.nextShort();
 
@@ -52,6 +55,7 @@ public class OrderServiceImpl implements OrderService {
         String[] itemSplitIdArr = submitOrderBO.getItemSpecIds().split(",");
         Integer totalAmount = 0;    //原价
         Integer realPayAmount = 0;  //优惠后的实际支付累计
+        Integer postAmount = 0;     //邮费
         for (String itemSplitId : itemSplitIdArr) {
             //1.1 根据规格id，查询规格的价格详情，获取价格
             ItemsSpec itemsSpec = itemService.queryItemsBySpecId(itemSplitId);
@@ -87,14 +91,14 @@ public class OrderServiceImpl implements OrderService {
         //2.保存订单
         Orders newOrder = new Orders();
         newOrder.setId(orderId);
-        newOrder.setUserId(submitOrderBO.getUserId());
+        newOrder.setUserId(userId);
         newOrder.setReceiverName(address.getReceiver());
         newOrder.setReceiverMobile(address.getMobile());
         newOrder.setReceiverAddress(address.getProvince()
                 + address.getCity() + address.getDistrict() + address.getDetail());
         newOrder.setTotalAmount(totalAmount);
         newOrder.setRealPayAmount(realPayAmount);
-        newOrder.setPostAmount(0);
+        newOrder.setPostAmount(postAmount);
         newOrder.setPayMethod(submitOrderBO.getPayMethod());
         newOrder.setLeftMsg(submitOrderBO.getLeftMsg());
         newOrder.setIsComment(StatusEnum.NO.type);
@@ -110,7 +114,33 @@ public class OrderServiceImpl implements OrderService {
         orderStatus.setCreatedTime(new Date());
         orderStatusMapper.insert(orderStatus);
 
-        return orderId;
+        //4.构建商户订单，用于传给支付中心
+        MerchantOrderVO merchantOrderVO = new MerchantOrderVO();
+        merchantOrderVO.setMerchantOrderId(orderId);
+        merchantOrderVO.setMerchantUserId(userId);
+        merchantOrderVO.setAmount(realPayAmount + postAmount);
+        merchantOrderVO.setPayMethod(submitOrderBO.getPayMethod());
+
+        //5.构建自定义订单vo
+        OrderVO orderVO = new OrderVO();
+        orderVO.setOrderId(orderId);
+        orderVO.setMerchantOrderVO(merchantOrderVO);
+        return orderVO;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void updateOrderStatus(String orderId, Integer orderStatus) {
+        OrderStatus paidStatus = new OrderStatus();
+        paidStatus.setOrderId(orderId);
+        paidStatus.setOrderStatus(orderStatus);
+        paidStatus.setPayTime(new Date());
+        orderStatusMapper.updateByPrimaryKeySelective(paidStatus);
+    }
+
+    @Override
+    public OrderStatus queryOrderStatusInfo(String orderId) {
+        return orderStatusMapper.selectByPrimaryKey(orderId);
     }
 
 
