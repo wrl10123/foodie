@@ -88,4 +88,13 @@ public class AddressServiceImpl implements AddressService {
         defaultAddress.setIsDefault(StatusEnum.YES.type);
         userAddressMapper.updateByPrimaryKeySelective(defaultAddress);
     }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public UserAddress queryUserAddress(String userId, String addressId) {
+        UserAddress userAddress = new UserAddress();
+        userAddress.setId(addressId);
+        userAddress.setUserId(userId);
+        return userAddressMapper.selectOne(userAddress);
+    }
 }

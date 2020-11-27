@@ -3,6 +3,7 @@ package com.imooc.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.imooc.enums.CommentLevelEnum;
+import com.imooc.enums.StatusEnum;
 import com.imooc.mapper.ItemsCommentsMapper;
 import com.imooc.mapper.ItemsImgMapper;
 import com.imooc.mapper.ItemsMapper;
@@ -167,5 +168,35 @@ public class ItemServiceImpl implements ItemService {
         return grid;
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public ItemsSpec queryItemsBySpecId(String specIds) {
+        return itemsSpecMapper.selectByPrimaryKey(specIds);
+    }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public String queryItemMainImgById(String itemId) {
+        ItemsImg item = new ItemsImg();
+        item.setItemId(itemId);
+        item.setIsMain(StatusEnum.YES.type);
+        ItemsImg result = itemsImgMapper.selectOne(item);
+        if (result == null) {
+            return null;
+        }
+        return result.getUrl();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void decreaseItemSpecStock(String specId, int buyCount) {
+
+        //synchronized：不推荐使用，集群下无用
+        //锁数据库：不推荐，性能低下
+
+        int count = itemsMapperCustom.decreaseItemSpecStock(buyCount, specId);
+        if (count != 1) {
+            throw new RuntimeException("库存不足");
+        }
+    }
 }

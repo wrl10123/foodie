@@ -44,4 +44,7 @@ public interface AddressService {
      * @param addressId
      */
     void setDefalut(String userId, String addressId);
+
+
+    UserAddress queryUserAddress(String userId, String addressId);
 }

@@ -64,9 +64,8 @@ public interface ItemService {
             String itemId, Integer level, Integer page, Integer pageSize);
 
     /**
-     *
      * @param keywords 搜索的关键字
-     * @param sort 排序条件
+     * @param sort     排序条件
      * @param page
      * @param pageSize
      * @return
@@ -75,9 +74,8 @@ public interface ItemService {
             String keywords, String sort, Integer page, Integer pageSize);
 
     /**
-     *
-     * @param catId 分类id
-     * @param sort 排序条件
+     * @param catId    分类id
+     * @param sort     排序条件
      * @param page
      * @param pageSize
      * @return
@@ -86,9 +84,35 @@ public interface ItemService {
             Integer catId, String sort, Integer page, Integer pageSize);
 
     /**
+     * 根据规格ids查询最新购物车中的商品数据。用于刷新渲染购物车中的商品数数据
      *
      * @param specIds
      * @return
      */
-    List<ShopcartVO> queryItemsBySpecIds (String specIds);
+    List<ShopcartVO> queryItemsBySpecIds(String specIds);
+
+
+    /**
+     * 根据商品规格id，获取规格的具体对象
+     *
+     * @param specId
+     * @return
+     */
+    ItemsSpec queryItemsBySpecId(String specId);
+
+    /**
+     * 根据商品id获取商品图片主图
+     *
+     * @param itemId
+     * @return
+     */
+    String queryItemMainImgById(String itemId);
+
+    /**
+     * 减少库存
+     *
+     * @param specId
+     * @param buyCount
+     */
+    void decreaseItemSpecStock(String specId, int buyCount);
 }
