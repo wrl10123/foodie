@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
-@Api(value = "订单相关接口")
+@Api(value = "订单相关接口", tags = {"订单相关api"})
 @RestController
 @RequestMapping("orders")
 public class OrdersController extends BaseController {

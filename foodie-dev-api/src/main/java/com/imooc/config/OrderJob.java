@@ -19,7 +19,7 @@ public class OrderJob {
      * 2. 不支持集群
      * 3. 会对数据库全表搜索，及其影响性能
      */
-    @Scheduled(cron = "0/5 * * * * ?")
+//    @Scheduled(cron = "0/5 * * * * ?")
     public void autoCloseOrder() {
         log.info("定时关单");
         orderService.closeOrder();

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Api(value = "地址相关接口")
+@Api(value = "地址相关接口", tags = {"收货地址相关api"})
 @RestController
 @RequestMapping("address")
 public class AddressController {
