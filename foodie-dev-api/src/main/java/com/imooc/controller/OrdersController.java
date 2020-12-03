@@ -85,6 +85,7 @@ public class OrdersController extends BaseController {
         return HttpStatus.OK.value();
     }
 
+    @ApiOperation(value = "查询订单详情", httpMethod = "POST")
     @PostMapping("getPaidOrderInfo")
     public IMOOCJSONResult getPaidOrderInfo(String orderId) {
         OrderStatus orderStatus = orderService.queryOrderStatusInfo(orderId);
