@@ -1,13 +1,12 @@
 package com.imooc.service.impl;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.imooc.enums.CommentLevelEnum;
 import com.imooc.enums.StatusEnum;
+import com.imooc.mapper.CustomItemsMapper;
 import com.imooc.mapper.ItemsCommentsMapper;
 import com.imooc.mapper.ItemsImgMapper;
 import com.imooc.mapper.ItemsMapper;
-import com.imooc.mapper.ItemsMapperCustom;
 import com.imooc.mapper.ItemsParamMapper;
 import com.imooc.mapper.ItemsSpecMapper;
 import com.imooc.pojo.Items;
@@ -19,6 +18,7 @@ import com.imooc.pojo.vo.CommentLevelCountsVO;
 import com.imooc.pojo.vo.ItemCommentVO;
 import com.imooc.pojo.vo.SearchItemsVO;
 import com.imooc.pojo.vo.ShopcartVO;
+import com.imooc.service.BaseService;
 import com.imooc.service.ItemService;
 import com.imooc.utils.DesensitizationUtil;
 import com.imooc.utils.PagedGridResult;
@@ -35,7 +35,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class ItemServiceImpl implements ItemService {
+public class ItemServiceImpl extends BaseService implements ItemService {
 
     @Autowired
     private ItemsMapper itemsMapper;
@@ -48,7 +48,7 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private ItemsCommentsMapper itemsCommentsMapper;
     @Autowired
-    private ItemsMapperCustom itemsMapperCustom;
+    private CustomItemsMapper itemsMapperCustom;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
@@ -149,23 +149,6 @@ public class ItemServiceImpl implements ItemService {
     public List<ShopcartVO> queryItemsBySpecIds(String specIds) {
         List<String> specIdList = Arrays.stream(specIds.split(",")).collect(Collectors.toList());
         return itemsMapperCustom.queryItemsBySpecIds(specIdList);
-    }
-
-    /**
-     * 分页详情
-     *
-     * @param voList
-     * @param page
-     * @return
-     */
-    public PagedGridResult setterPageGrid(List<?> voList, Integer page) {
-        PageInfo<?> pageInfo = new PageInfo<>(voList);
-        PagedGridResult grid = new PagedGridResult();
-        grid.setPage(page);
-        grid.setRows(voList);
-        grid.setTotal(pageInfo.getPages());
-        grid.setRecords(pageInfo.getTotal());
-        return grid;
     }
 
     @Transactional(propagation = Propagation.SUPPORTS)

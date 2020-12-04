@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
 
-public interface CategoryMapperCustom {
+public interface CustomCategoryMapper {
 
     List<CategoryVO> getSubCatList(Integer rootCatId);
 

@@ -2,6 +2,7 @@ package com.imooc.controller.center;
 
 import com.imooc.controller.BaseController;
 import com.imooc.pojo.Orders;
+import com.imooc.pojo.vo.OrderStatusCountsVO;
 import com.imooc.service.center.MyOrdersService;
 import com.imooc.utils.IMOOCJSONResult;
 import com.imooc.utils.PagedGridResult;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("myorders")
 public class MyOrdersController extends BaseController {
-
-    @Autowired
-    private MyOrdersService myOrdersService;
 
     @ApiOperation(value = "查询订单列表", httpMethod = "POST")
     @PostMapping("query")
@@ -67,9 +66,10 @@ public class MyOrdersController extends BaseController {
             @RequestParam String userId,
             @ApiParam(name = "orderId", value = "订单id", required = true)
             @RequestParam String orderId) {
-        Orders orders = myOrdersService.queryMyOrder(userId, orderId);
-        if (orders == null) {
-            return IMOOCJSONResult.errorMsg("订单不存在");
+
+        IMOOCJSONResult checkOrder = checkUserOrder(userId, orderId);
+        if (checkOrder.getStatus() != HttpStatus.OK.value()) {
+            return checkOrder;
         }
         Boolean result = myOrdersService.updateReceiveOrderStatus(orderId);
         if (!result) {
@@ -85,14 +85,47 @@ public class MyOrdersController extends BaseController {
             @RequestParam String userId,
             @ApiParam(name = "orderId", value = "订单id", required = true)
             @RequestParam String orderId) {
-        Orders orders = myOrdersService.queryMyOrder(userId, orderId);
-        if (orders == null) {
-            return IMOOCJSONResult.errorMsg("订单不存在");
+        IMOOCJSONResult checkOrder = checkUserOrder(userId, orderId);
+        if (checkOrder.getStatus() != HttpStatus.OK.value()) {
+            return checkOrder;
         }
         Boolean result = myOrdersService.deleteOrderStatus(userId, orderId);
         if (!result) {
             return IMOOCJSONResult.errorMsg("订单删除失败");
         }
         return IMOOCJSONResult.ok();
+    }
+
+    @ApiOperation(value = "查询用户订单个数", httpMethod = "POST")
+    @PostMapping("statusCounts")
+    public IMOOCJSONResult statusCounts(
+            @ApiParam(name = "userId", value = "用户id", required = true)
+            @RequestParam String userId) {
+        OrderStatusCountsVO orderStatusCounts =
+                myOrdersService.getOrderStatusCounts(userId);
+        return IMOOCJSONResult.ok(orderStatusCounts);
+    }
+
+    @ApiOperation(value = "查询用户中心订单动向", httpMethod = "POST")
+    @PostMapping("trend")
+    public IMOOCJSONResult trend(
+            @ApiParam(name = "userId", value = "用户id", required = true)
+            @RequestParam String userId,
+            @ApiParam(name = "page", value = "当前页数", required = false)
+            @RequestParam Integer page,
+            @ApiParam(name = "pageSize", value = "每页条数", required = false)
+            @RequestParam Integer pageSize) {
+        if (StringUtils.isBlank(userId)) {
+            return IMOOCJSONResult.errorMsg(null);
+        }
+        if (page == null) {
+            page = 1;
+        }
+        if (pageSize == null) {
+            pageSize = COMMENT_PAGE_SIZE;
+        }
+        PagedGridResult orderTrend =
+                myOrdersService.getOrderTrend(userId, page, pageSize);
+        return IMOOCJSONResult.ok(orderTrend);
     }
 }

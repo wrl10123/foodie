@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.mapper.CustomOrdersMapper">
+
+    <resultMap id="myOrdersVODoNot" type="com.imooc.pojo.vo.MyOrdersVO">
+        <id column="orderId" property="orderId"/>
+        <result column="createdTime" property="createdTime"/>
+        <result column="payMethod" property="payMethod"/>
+        <result column="realPayAmount" property="realPayAmount"/>
+        <result column="postAmount" property="postAmount"/>
+        <result column="orderStatus" property="orderStatus"/>
+        <result column="isComment" property="isComment"/>
+        <collection property="subOrderItemList" ofType="com.imooc.pojo.vo.MySubOrderItemVO">
+            <result column="itemId" property="itemId"/>
+            <result column="itemName" property="itemName"/>
+            <result column="itemImg" property="itemImg"/>
+            <result column="itemSpecId" property="itemSpecId"/>
+            <result column="itemSpecName" property="itemSpecName"/>
+            <result column="buyCounts" property="buyCounts"/>
+            <result column="price" property="price"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryMyOrdersDoNot" resultMap="myOrdersVODoNot">
+        select
+        od.id as orderId,
+        od.created_time as createdTime,
+        od.pay_method as payMethod,
+        od.real_pay_amount as realPayAmount,
+        od.post_amount as postAmount,
+        os.order_status as orderStatus,
+        od.is_comment as isComment,
+        oi.item_id as itemId,
+        oi.item_name as itemName,
+        oi.item_img as itemImg,
+        oi.item_spec_id as itemSpecId,
+        oi.item_spec_name as itemSpecName,
+        oi.buy_counts as buyCounts,
+        oi.price as price
+        from orders od
+        left join order_status os on od.id = os.order_id
+        left join order_items oi on od.id = oi.order_id
+        where od.user_id = #{paramMap.userId}
+        and od.is_delete = 0
+        <if test="paramMap.orderStatus != null">
+            and os.order_status = #{paramMap.orderStatus}
+        </if>
+        order by updated_time asc
+    </select>
+
+    <resultMap id="myOrdersVO" type="com.imooc.pojo.vo.MyOrdersVO">
+        <id column="orderId" property="orderId"/>
+        <result column="createdTime" property="createdTime"/>
+        <result column="payMethod" property="payMethod"/>
+        <result column="realPayAmount" property="realPayAmount"/>
+        <result column="postAmount" property="postAmount"/>
+        <result column="orderStatus" property="orderStatus"/>
+        <result column="isComment" property="isComment"/>
+        <collection property="subOrderItemList"
+                    select="getSubItems"
+                    column="orderId"
+                    ofType="com.imooc.pojo.vo.MySubOrderItemVO">
+            <result column="itemId" property="itemId"/>
+            <result column="itemName" property="itemName"/>
+            <result column="itemImg" property="itemImg"/>
+            <result column="itemSpecId" property="itemSpecId"/>
+            <result column="itemSpecName" property="itemSpecName"/>
+            <result column="buyCounts" property="buyCounts"/>
+            <result column="price" property="price"/>
+        </collection>
+    </resultMap>
+
+    <select id="queryMyOrders" resultMap="myOrdersVO">
+        select
+        od.id as orderId,
+        od.created_time as createdTime,
+        od.pay_method as payMethod,
+        od.real_pay_amount as realPayAmount,
+        od.post_amount as postAmount,
+        od.is_comment as isComment,
+        os.order_status as orderStatus
+        from orders od
+        left join order_status os on od.id = os.order_id
+        where od.user_id = #{paramMap.userId}
+        and od.is_delete = 0
+        <if test="paramMap.orderStatus != null">
+            and os.order_status = #{paramMap.orderStatus}
+        </if>
+        order by updated_time asc
+    </select>
+
+    <select id="getSubItems" parameterType="string" resultType="com.imooc.pojo.vo.MySubOrderItemVO">
+        select
+            oi.item_id as itemId,
+			oi.item_name as itemName,
+			oi.item_img as itemImg,
+			oi.item_spec_id as itemSpecId,
+			oi.item_spec_name as itemSpecName,
+			oi.buy_counts as buyCounts,
+			oi.price as price
+		from order_items oi
+		where oi.order_id = #{orderId}
+	</select>
+
+    <select id="getMyOrderStatusCounts" parameterType="map" resultType="int">
+        SELECT
+        count(1)
+        FROM
+        orders o
+        LEFT JOIN order_status os on o.id = os.order_id
+        where o.user_id = #{paramMap.userId}
+        and os.order_status = #{paramMap.orderStatus}
+        <if test="paramMap.isComment != null">
+            and o.is_comment = 0
+        </if>
+    </select>
+
+    <select id="getMyOrderTrend" parameterType="string" resultType="com.imooc.pojo.OrderStatus">
+        SELECT
+            os.order_id as orderId,
+            os.order_status as orderStatus,
+            os.created_time as createdTime,
+            os.pay_time as payTime,
+            os.deliver_time as deliverTime,
+            os.success_time as successTime,
+            os.close_time as closeTime,
+            os.comment_time as commentTime
+        FROM
+            orders o
+        LEFT JOIN order_status os ON o.id = os.order_id
+        WHERE o.is_delete = 0
+        AND os.order_status in (20,30,40)
+        AND o.user_id = #{userId}
+        order by os.order_id desc
+    </select>
+</mapper>

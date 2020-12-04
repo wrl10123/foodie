@@ -1,7 +1,7 @@
 package com.imooc.service.impl;
 
 import com.imooc.mapper.CategoryMapper;
-import com.imooc.mapper.CategoryMapperCustom;
+import com.imooc.mapper.CustomCategoryMapper;
 import com.imooc.pojo.Category;
 import com.imooc.pojo.vo.CategoryVO;
 import com.imooc.pojo.vo.SimpleItemVO;
@@ -22,7 +22,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Autowired
     private CategoryMapper categoryMapper;
     @Autowired
-    private CategoryMapperCustom categoryMapperCustom;
+    private CustomCategoryMapper categoryMapperCustom;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override

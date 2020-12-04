@@ -1,5 +1,10 @@
 package com.imooc.controller;
 
+import com.imooc.pojo.Orders;
+import com.imooc.service.center.MyOrdersService;
+import com.imooc.utils.IMOOCJSONResult;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.io.File;
 
 public class BaseController {
@@ -20,4 +25,16 @@ public class BaseController {
     public static final String IMAGE_USER_FACE_LOCATION = "d:"
             + File.separator + "v_irlwang"
             + File.separator + "images";
+
+    @Autowired
+    public MyOrdersService myOrdersService;
+
+    public IMOOCJSONResult checkUserOrder(String userId, String orderId) {
+        Orders orders = myOrdersService.queryMyOrder(userId, orderId);
+        if (orders == null) {
+            return IMOOCJSONResult.errorMsg("订单不存在");
+        }
+        return IMOOCJSONResult.ok(orders);
+    }
+
 }

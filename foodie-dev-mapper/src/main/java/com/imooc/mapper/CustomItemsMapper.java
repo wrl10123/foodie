@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Map;
 
-public interface ItemsMapperCustom {
+public interface CustomItemsMapper {
 
     List<ItemCommentVO> queryItemComments(@Param("paramMap") Map<String, Object> map);
 

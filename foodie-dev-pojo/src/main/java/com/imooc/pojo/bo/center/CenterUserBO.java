@@ -1,4 +1,4 @@
-package com.imooc.pojo.bo;
+package com.imooc.pojo.bo.center;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
