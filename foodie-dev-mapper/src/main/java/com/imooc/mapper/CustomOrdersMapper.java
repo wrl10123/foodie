@@ -28,12 +28,12 @@ public interface CustomOrdersMapper {
     List<MyOrdersVO> queryMyOrders(@Param("paramMap") Map<String, Object> map);
 
     /**
-     * 查询订单附属
+     * 查询订单附属。里面用不着接口，xml里面有查询语句就可以了
      *
-     * @param orderId
+     * @param map
      * @return
      */
-    List<MySubOrderItemVO> getSubItems(String orderId);
+//    List<MySubOrderItemVO> getSubItems(@Param("paramMap") Map<String, Object> map);
 
     /**
      * 查询我的订单状态个数

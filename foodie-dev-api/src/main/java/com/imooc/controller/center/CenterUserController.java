@@ -16,7 +16,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Api(value = "用户信息相关接口", tags = {"用户信息详情api"})
@@ -69,27 +66,6 @@ public class CenterUserController extends BaseController {
         //todo 后续要改，增加令牌token，整合redis
 
         return IMOOCJSONResult.ok();
-    }
-
-    private Map<String, String> getErrors(BindingResult result) {
-        Map<String, String> errorMap = new HashMap<>();
-        List<FieldError> errorList = result.getFieldErrors();
-        for (FieldError error : errorList) {
-            //发送验证错误对应的某一个属性
-            String errorField = error.getField();
-            //验证错误的信息
-            String defaultMessage = error.getDefaultMessage();
-            errorMap.put(errorField, defaultMessage);
-        }
-        return errorMap;
-    }
-
-    private void setNullPreperty(Users users) {
-        users.setPassword(null);
-        users.setMobile(null);
-        users.setEmail(null);
-        users.setCreatedTime(null);
-        users.setUpdatedTime(null);
     }
 
     @ApiOperation(value = "用户头像修改")
@@ -178,5 +154,21 @@ public class CenterUserController extends BaseController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @ApiOperation(value = "修改用户密码", httpMethod = "POST")
+    @PostMapping("updatePassword")
+    public IMOOCJSONResult updatePassword(
+            @ApiParam(name = "userId", value = "用户id", required = true)
+            @RequestParam String userId,
+            @ApiParam(name = "oldPassword", value = "用户旧密码", required = true)
+            @RequestParam String oldPassword,
+            @ApiParam(name = "newPassword", value = "用户新密码", required = true)
+            @RequestParam String newPassword) {
+        Boolean status = centerUserService.updateUserPassword(userId, oldPassword, newPassword);
+        if (status) {
+            return IMOOCJSONResult.ok();
+        }
+        return IMOOCJSONResult.errorMsg("修改失败");
     }
 }

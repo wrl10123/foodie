@@ -30,4 +30,13 @@ public interface CenterUserService {
      * @return
      */
     Users updateUserFace(String userId, String faceUrl);
+
+    /**
+     * 修改用户密码
+     *
+     * @param userId
+     * @param oldPassword
+     * @param newPassword
+     */
+    Boolean updateUserPassword(String userId, String oldPassword, String newPassword);
 }

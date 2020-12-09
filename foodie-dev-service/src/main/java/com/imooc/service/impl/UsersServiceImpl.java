@@ -45,8 +45,8 @@ public class UsersServiceImpl implements UsersService {
         Users user = new Users();
         user.setId(userId);
         user.setUsername(userBO.getUsername());
-        user.setPassword(userBO.getPassword());
-        user.setPassword(MD5Utils.getMD5Str(user.getPassword()));
+//        user.setPassword(userBO.getPassword());
+        user.setPassword(MD5Utils.getMD5Str(userBO.getPassword()));
         //默认用户昵称，同用户名
         user.setNickname(userBO.getUsername());
         //设置默认用户头像

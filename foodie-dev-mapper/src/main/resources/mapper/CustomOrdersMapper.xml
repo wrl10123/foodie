@@ -72,13 +72,13 @@
 
     <select id="queryMyOrders" resultMap="myOrdersVO">
         select
-        od.id as orderId,
-        od.created_time as createdTime,
-        od.pay_method as payMethod,
-        od.real_pay_amount as realPayAmount,
-        od.post_amount as postAmount,
-        od.is_comment as isComment,
-        os.order_status as orderStatus
+            od.id as orderId,
+            od.created_time as createdTime,
+            od.pay_method as payMethod,
+            od.real_pay_amount as realPayAmount,
+            od.post_amount as postAmount,
+            od.is_comment as isComment,
+            os.order_status as orderStatus
         from orders od
         left join order_status os on od.id = os.order_id
         where od.user_id = #{paramMap.userId}

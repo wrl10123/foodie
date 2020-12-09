@@ -30,6 +30,8 @@ public class MyOrdersController extends BaseController {
             @RequestParam String userId,
             @ApiParam(name = "orderStatus", value = "订单状态", required = false)
             @RequestParam Integer orderStatus,
+            @ApiParam(name = "keywords", value = "搜索关键字", required = false)
+            @RequestParam String keywords,
             @ApiParam(name = "page", value = "当前页数", required = false)
             @RequestParam Integer page,
             @ApiParam(name = "pageSize", value = "每页条数", required = false)
@@ -46,7 +48,7 @@ public class MyOrdersController extends BaseController {
         }
 
         PagedGridResult pagedGridResult =
-                myOrdersService.queryMyOrders(userId, orderStatus, page, pageSize);
+                myOrdersService.queryMyOrders(userId, orderStatus, keywords, page, pageSize);
         return IMOOCJSONResult.ok(pagedGridResult);
     }
 

@@ -13,6 +13,7 @@ public interface MyOrdersService {
      * @return
      */
     PagedGridResult queryMyOrders(String userId, Integer orderStatus,
+                                  String keywords,
                                   Integer page, Integer pageSize);
 
     /**

@@ -4,6 +4,7 @@ import com.imooc.mapper.UsersMapper;
 import com.imooc.pojo.Users;
 import com.imooc.pojo.bo.center.CenterUserBO;
 import com.imooc.service.center.CenterUserService;
+import com.imooc.utils.MD5Utils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,5 +51,22 @@ public class CenterUserServiceImpl implements CenterUserService {
         return queryUserInfo(userId);
     }
 
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public Boolean updateUserPassword(String userId, String oldPassword, String newPassword) {
+        Users selectUser = new Users();
+        selectUser.setId(userId);
+        selectUser.setPassword(MD5Utils.getMD5Str(oldPassword));
+        Users users = usersMapper.selectOne(selectUser);
+        if (users != null) {
+            //更新密码
+            users.setPassword(MD5Utils.getMD5Str(newPassword));
+            users.setUpdatedTime(new Date());
+            int status = usersMapper.updateByPrimaryKeySelective(users);
+            return status == 1 ? true : false;
+        }
+        return false;
+    }
 
 }

@@ -1,11 +1,17 @@
 package com.imooc.controller;
 
 import com.imooc.pojo.Orders;
+import com.imooc.pojo.Users;
 import com.imooc.service.center.MyOrdersService;
 import com.imooc.utils.IMOOCJSONResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class BaseController {
 
@@ -29,12 +35,48 @@ public class BaseController {
     @Autowired
     public MyOrdersService myOrdersService;
 
+    /**
+     * 校验订单是否存在
+     * @param userId
+     * @param orderId
+     * @return
+     */
     public IMOOCJSONResult checkUserOrder(String userId, String orderId) {
         Orders orders = myOrdersService.queryMyOrder(userId, orderId);
         if (orders == null) {
             return IMOOCJSONResult.errorMsg("订单不存在");
         }
         return IMOOCJSONResult.ok(orders);
+    }
+
+    /**
+     * 用户属性设空
+     *
+     * @param users
+     */
+    public void setNullPreperty(Users users) {
+        users.setPassword(null);
+        users.setMobile(null);
+        users.setEmail(null);
+        users.setCreatedTime(null);
+        users.setUpdatedTime(null);
+    }
+
+    /**
+     * @param result
+     * @return
+     */
+    public Map<String, String> getErrors(BindingResult result) {
+        Map<String, String> errorMap = new HashMap<>();
+        List<FieldError> errorList = result.getFieldErrors();
+        for (FieldError error : errorList) {
+            //发送验证错误对应的某一个属性
+            String errorField = error.getField();
+            //验证错误的信息
+            String defaultMessage = error.getDefaultMessage();
+            errorMap.put(errorField, defaultMessage);
+        }
+        return errorMap;
     }
 
 }
