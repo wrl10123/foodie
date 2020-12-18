@@ -85,33 +85,25 @@ public class CenterUserController extends BaseController {
             return IMOOCJSONResult.errorMsg("文件名字不能为空");
         }
 
-        System.out.println(file.getSize());
-
-        //开始组装完整的文件路径。
-        //1.分割文件名
-        String[] fileNameArr = fileName.split("\\.");
-        //2.拿到后缀
-        String suffix = fileNameArr[fileNameArr.length - 1];
-        //验证图片后缀
-        if (validSuffix(suffix)) {
-            return IMOOCJSONResult.errorMsg("图片格式不正确");
+        //拿到新的文件名
+        String newFileName = getNewFileName(fileName, userId);
+        if (ERROR_IMG_FILE.equals(newFileName)) {
+            return IMOOCJSONResult.errorMsg(ERROR_IMG_FILE);
         }
-        //3.组装文件名格式： face-{userId}.jpg。覆盖式文件名，
-        String newFileName = "face-" + userId + "." + suffix;
-        //完整的文件路径： 本地路径+用户id文件夹+新的文件名
+
+        //（1） 本地的完整的文件路径： 本地路径+用户id文件夹+新的文件名
         String finalFilePath = fileUpload.getImageUserFaceLocation()
                 + File.separator + userId       //在路径上为每一个用户增加userId，用于区分不同的用户上传
                 + File.separator + newFileName;
         //开始上传文件
         uploadFileInfo(file, finalFilePath);
 
-        //web服务用来访问头像文件的真实地址
+        //（2） web服务用来访问头像文件的真实地址： web服务地址+用户id文件夹+新的文件名
         String imageServerUrl = fileUpload.getImageServerUrl()
-                + userId + File.separator + newFileName;
-
+                + File.separator + userId
+                + File.separator + newFileName;
         //由于浏览器可能存在缓存，所以这里要添加一个时间戳
         imageServerUrl += "?t=" + DateUtil.getCurrentDateString(DateUtil.DATE_PATTERN);
-
         Users users = centerUserService.updateUserFace(userId, imageServerUrl);
         setNullPreperty(users);
 
@@ -121,6 +113,27 @@ public class CenterUserController extends BaseController {
 
         //todo 后续要改，增加令牌token，整合redis
         return IMOOCJSONResult.ok();
+    }
+
+    /**
+     * 拿到一个新的图片文件名字
+     *
+     * @param fileName
+     * @param userId
+     * @return
+     */
+    private String getNewFileName(String fileName, String userId) {
+        //开始组装完整的文件路径。
+        //1.分割文件名
+        String[] fileNameArr = fileName.split("\\.");
+        //2.拿到后缀
+        String suffix = fileNameArr[fileNameArr.length - 1];
+        //验证图片后缀
+        if (!validSuffix(suffix)) {
+            return ERROR_IMG_FILE;
+        }
+        //3.组装文件名格式： face-{userId}.jpg。覆盖式文件名，
+        return "face-" + userId + "." + suffix;
     }
 
     private boolean validSuffix(String suffix) {

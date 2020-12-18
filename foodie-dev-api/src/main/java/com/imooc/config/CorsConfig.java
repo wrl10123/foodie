@@ -22,6 +22,10 @@ public class CorsConfig {
         //1. 添加cors配置信息
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:8080");
+        configuration.addAllowedOrigin("http://shop.z.alone-annie.com:8080");
+        configuration.addAllowedOrigin("http://center.z.alone-annie.com:8080");
+        configuration.addAllowedOrigin("http://shop.z.alone-annie.com");
+        configuration.addAllowedOrigin("http://center.z.alone-annie.com");
 
         //设置是否发送cookie信息
         configuration.setAllowCredentials(true);

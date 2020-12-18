@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    #内网ip
+    url: jdbc:mysql://172.17.0.4:3306/foodie-shop?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
+    password: WRLwrl123
