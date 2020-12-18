@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 //属性前缀
 @ConfigurationProperties(prefix = "file")
 //配置文件路径
-@PropertySource("classpath:file-upload-prod.properties")
+@PropertySource("classpath:file-upload-dev.properties")
 public class FileUpload {
 
     private String imageUserFaceLocation;

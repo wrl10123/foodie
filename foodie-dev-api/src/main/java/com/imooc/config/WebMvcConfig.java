@@ -28,8 +28,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**")
-//                .addResourceLocations("file:D:\\v_irlwang\\images\\")      //映射本地静态资源
-                .addResourceLocations("file:/usr/alone/images/")      //映射本地静态资源
+                .addResourceLocations("file:D:\\v_irlwang\\images\\")      //映射本地静态资源
+//                .addResourceLocations("file:/usr/alone/images/")      //映射本地静态资源
                 .addResourceLocations("classpath:/META-INF/resources/");  //映射swagger2
     }
 }
